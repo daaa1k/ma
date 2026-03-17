@@ -45,9 +45,8 @@ Supported tools: copilot, opencode, codex`,
 // newToolCmd builds a subcommand that launches a specific AI tool.
 func newToolCmd(use, short string, l launcher.Launcher, configFlag *string) *cobra.Command {
 	return &cobra.Command{
-		Use:                use,
-		Short:              short,
-		DisableFlagParsing: false,
+		Use:   use,
+		Short: short,
 		// Accept any number of positional args so that extra tool args after "--"
 		// are collected by cobra automatically.
 		Args: cobra.ArbitraryArgs,
