@@ -84,10 +84,7 @@ file in the following order:
     },
     "figma": {
       "type": "http",
-      "url": "https://mcp.figma.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${FIGMA_TOKEN}"
-      }
+      "url": "https://mcp.figma.com/mcp"
     },
     "cloudflare": {
       "type": "sse",
