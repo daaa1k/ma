@@ -1,5 +1,5 @@
 {
-  description = "ma — TODO: describe your app";
+  description = "ma — MCP config adapter and tool launcher";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -121,7 +121,7 @@
           ldflags = [ "-s" "-w" "-X main.version=${version}" ];
 
           meta = with pkgs.lib; {
-            description = "TODO: describe your app";
+            description = "MCP config adapter and tool launcher for AI coding tools";
             homepage    = "https://github.com/daaa1k/ma";
             license     = licenses.mit;
             mainProgram = "ma";
