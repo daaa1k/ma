@@ -181,4 +181,3 @@ func fromServer(name string, s model.Server) (serverEntry, []Warning) {
 		return serverEntry{}, warnings
 	}
 }
-

@@ -273,4 +273,3 @@ func tomlStringMap(m map[string]string) string {
 	}
 	return "{" + strings.Join(parts, ", ") + "}"
 }
-

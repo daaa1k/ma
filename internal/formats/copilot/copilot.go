@@ -164,4 +164,3 @@ func fromServer(name string, s model.Server) (serverEntry, []Warning, error) {
 		return serverEntry{}, warnings, fmt.Errorf("copilot: server %q: unsupported type %q", name, s.Type)
 	}
 }
-
