@@ -116,6 +116,69 @@ bearer_token_env_var = "TOKEN"
 	}
 }
 
+func TestBuildConfigOverrides(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		input    string
+		wantArgs []string
+		wantErr  bool
+	}{
+		{
+			name: "stdio_server",
+			input: `
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp@latest"]
+`,
+			wantArgs: []string{
+				"-c", `mcp_servers.context7={command = "npx", args = ["-y", "@upstash/context7-mcp@latest"]}`,
+			},
+		},
+		{
+			name: "http_server",
+			input: `
+[mcp_servers.figma]
+url = "https://mcp.figma.com/mcp"
+bearer_token_env_var = "FIGMA_TOKEN"
+`,
+			wantArgs: []string{
+				"-c", `mcp_servers.figma={url = "https://mcp.figma.com/mcp", bearer_token_env_var = "FIGMA_TOKEN"}`,
+			},
+		},
+		{
+			name:    "invalid_toml",
+			input:   `[bad toml`,
+			wantErr: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			got, err := codex.BuildConfigOverrides([]byte(tc.input))
+			if tc.wantErr {
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if len(got) != len(tc.wantArgs) {
+				t.Fatalf("args len: got %d, want %d\ngot:  %v\nwant: %v", len(got), len(tc.wantArgs), got, tc.wantArgs)
+			}
+			for i := range tc.wantArgs {
+				if got[i] != tc.wantArgs[i] {
+					t.Errorf("args[%d]: got %q, want %q", i, got[i], tc.wantArgs[i])
+				}
+			}
+		})
+	}
+}
+
 func TestEncode(t *testing.T) {
 	t.Parallel()
 

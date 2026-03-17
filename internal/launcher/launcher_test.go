@@ -16,30 +16,78 @@ import (
 func TestLauncherBuildArgs(t *testing.T) {
 	t.Parallel()
 
-	const fakeConfig = "/tmp/fake-config.json"
 	extra := []string{"--foo", "bar"}
+
+	// Write a minimal Copilot JSON config for the copilot test case.
+	copilotJSON := `{"mcpServers":{"srv":{"command":"node","args":["s.js"]}}}`
+	copilotFile := filepath.Join(t.TempDir(), "copilot.json")
+	if err := os.WriteFile(copilotFile, []byte(copilotJSON), 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	// Write a minimal Codex TOML config for the codex test case.
+	codexTOML := "[mcp_servers.srv]\ncommand = \"node\"\nargs = [\"s.js\"]\n"
+	codexFile := filepath.Join(t.TempDir(), "codex.toml")
+	if err := os.WriteFile(codexFile, []byte(codexTOML), 0o600); err != nil {
+		t.Fatal(err)
+	}
 
 	tests := []struct {
 		name       string
 		l          launcher.Launcher
-		wantArgs   []string // prefix of expected argv
-		wantEnvKey string   // non-empty: expect this key in EnvVars
+		configFile string
+		checkArgs  func(t *testing.T, got []string)
+		wantEnvKey string // non-empty: expect this key prefix in EnvVars
 	}{
 		{
-			name:     "copilot",
-			l:        launcher.CopilotLauncher{},
-			wantArgs: []string{"--additional-mcp-config", fakeConfig, "--foo", "bar"},
+			name:       "copilot",
+			l:          launcher.CopilotLauncher{},
+			configFile: copilotFile,
+			checkArgs: func(t *testing.T, got []string) {
+				t.Helper()
+				if len(got) < 2 || got[0] != "--additional-mcp-config" {
+					t.Fatalf("expected --additional-mcp-config as first arg, got %v", got)
+				}
+				if !strings.Contains(got[1], "mcpServers") {
+					t.Errorf("expected JSON content in arg[1], got %q", got[1])
+				}
+				if got[len(got)-2] != "--foo" || got[len(got)-1] != "bar" {
+					t.Errorf("extra args not appended: %v", got)
+				}
+			},
 		},
 		{
 			name:       "opencode",
 			l:          launcher.OpenCodeLauncher{},
-			wantArgs:   []string{"--foo", "bar"},
+			configFile: "/tmp/fake-opencode.json",
+			checkArgs: func(t *testing.T, got []string) {
+				t.Helper()
+				if len(got) != 2 || got[0] != "--foo" || got[1] != "bar" {
+					t.Errorf("expected only extra args, got %v", got)
+				}
+			},
 			wantEnvKey: "OPENCODE_CONFIG=",
 		},
 		{
-			name:     "codex",
-			l:        launcher.CodexLauncher{},
-			wantArgs: []string{"--config", fakeConfig, "--foo", "bar"},
+			name:       "codex",
+			l:          launcher.CodexLauncher{},
+			configFile: codexFile,
+			checkArgs: func(t *testing.T, got []string) {
+				t.Helper()
+				// Expect: -c mcp_servers.srv={...} --foo bar
+				if len(got) < 4 {
+					t.Fatalf("expected at least 4 args, got %d: %v", len(got), got)
+				}
+				if got[0] != "-c" {
+					t.Errorf("arg[0]: got %q, want \"-c\"", got[0])
+				}
+				if !strings.HasPrefix(got[1], "mcp_servers.srv=") {
+					t.Errorf("arg[1]: got %q, want mcp_servers.srv=...", got[1])
+				}
+				if got[len(got)-2] != "--foo" || got[len(got)-1] != "bar" {
+					t.Errorf("extra args not appended: %v", got)
+				}
+			},
 		},
 	}
 
@@ -47,18 +95,11 @@ func TestLauncherBuildArgs(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := tc.l.BuildArgs(fakeConfig, extra)
-			if len(got) != len(tc.wantArgs) {
-				t.Fatalf("BuildArgs length: got %d %v, want %d %v", len(got), got, len(tc.wantArgs), tc.wantArgs)
-			}
-			for i, w := range tc.wantArgs {
-				if got[i] != w {
-					t.Errorf("BuildArgs[%d]: got %q, want %q", i, got[i], w)
-				}
-			}
+			got := tc.l.BuildArgs(tc.configFile, extra)
+			tc.checkArgs(t, got)
 
 			if tc.wantEnvKey != "" {
-				envVars := tc.l.EnvVars(fakeConfig)
+				envVars := tc.l.EnvVars(tc.configFile)
 				found := false
 				for _, e := range envVars {
 					if strings.HasPrefix(e, tc.wantEnvKey) {

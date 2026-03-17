@@ -8,10 +8,6 @@ on:
 permissions:
   contents: write
 
-env:
-  # TODO: Change this to your app name
-  APP_NAME: ma
-
 jobs:
   create-release:
     name: Create Release
@@ -44,16 +40,16 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-latest
-            artifact: ${{ env.APP_NAME }}-linux-x86_64
-            binary: ${{ env.APP_NAME }}
+            artifact: ma-linux-x86_64
+            binary: ma
           - target: aarch64-apple-darwin
             runner: macos-latest
-            artifact: ${{ env.APP_NAME }}-macos-aarch64
-            binary: ${{ env.APP_NAME }}
+            artifact: ma-macos-aarch64
+            binary: ma
           - target: x86_64-pc-windows-msvc
             runner: windows-latest
-            artifact: ${{ env.APP_NAME }}-windows-x86_64.exe
-            binary: ${{ env.APP_NAME }}.exe
+            artifact: ma-windows-x86_64.exe
+            binary: ma.exe
 
     steps:
       - uses: actions/checkout@v6

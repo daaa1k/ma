@@ -201,6 +201,80 @@ func cleanTOML(buf bytes.Buffer) []byte {
 	return out
 }
 
+// BuildConfigOverrides converts encoded Codex TOML config data into a list of
+// -c key=value override arguments suitable for passing to the codex CLI.
+// Each MCP server becomes a single "-c", "mcp_servers.NAME=<inline-table>" pair.
+func BuildConfigOverrides(data []byte) ([]string, error) {
+	var f configFile
+	if _, err := toml.NewDecoder(bytes.NewReader(data)).Decode(&f); err != nil {
+		return nil, fmt.Errorf("codex: parse TOML: %w", err)
+	}
+
+	names := make([]string, 0, len(f.MCPServers))
+	for n := range f.MCPServers {
+		names = append(names, n)
+	}
+	sort.Strings(names)
+
+	var args []string
+	for _, name := range names {
+		entry := f.MCPServers[name]
+		args = append(args, "-c", fmt.Sprintf("mcp_servers.%s=%s", name, serverToInlineTOML(entry)))
+	}
+	return args, nil
+}
+
+// serverToInlineTOML serialises a serverEntry as a TOML inline table string.
+func serverToInlineTOML(e serverEntry) string {
+	var parts []string
+	if e.Command != "" {
+		parts = append(parts, "command = "+tomlQuote(e.Command))
+	}
+	if len(e.Args) > 0 {
+		parts = append(parts, "args = "+tomlStringArray(e.Args))
+	}
+	if len(e.Env) > 0 {
+		parts = append(parts, "env = "+tomlStringMap(e.Env))
+	}
+	if e.URL != "" {
+		parts = append(parts, "url = "+tomlQuote(e.URL))
+	}
+	if e.BearerTokenEnvVar != "" {
+		parts = append(parts, "bearer_token_env_var = "+tomlQuote(e.BearerTokenEnvVar))
+	}
+	if len(e.HTTPHeaders) > 0 {
+		parts = append(parts, "http_headers = "+tomlStringMap(e.HTTPHeaders))
+	}
+	return "{" + strings.Join(parts, ", ") + "}"
+}
+
+func tomlQuote(s string) string {
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	return `"` + s + `"`
+}
+
+func tomlStringArray(ss []string) string {
+	quoted := make([]string, len(ss))
+	for i, s := range ss {
+		quoted[i] = tomlQuote(s)
+	}
+	return "[" + strings.Join(quoted, ", ") + "]"
+}
+
+func tomlStringMap(m map[string]string) string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	parts := make([]string, 0, len(keys))
+	for _, k := range keys {
+		parts = append(parts, tomlQuote(k)+" = "+tomlQuote(m[k]))
+	}
+	return "{" + strings.Join(parts, ", ") + "}"
+}
+
 // WriteWarnings writes warnings to w in a human-readable format.
 func WriteWarnings(w io.Writer, warnings []Warning) {
 	for _, warn := range warnings {
