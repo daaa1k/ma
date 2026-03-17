@@ -60,7 +60,13 @@ func Decode(data []byte) (*model.Config, error) {
 }
 
 func toServer(name string, e serverEntry) (model.Server, error) {
-	switch e.Type {
+	// Infer type from fields when not explicitly specified.
+	typ := e.Type
+	if typ == "" && e.Command != "" {
+		typ = "stdio"
+	}
+
+	switch typ {
 	case "stdio":
 		return model.Server{
 			Type:    model.TypeStdio,

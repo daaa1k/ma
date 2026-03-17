@@ -77,6 +77,24 @@ func TestDecode(t *testing.T) {
 			},
 		},
 		{
+			name: "stdio_implicit",
+			input: `{
+				"mcpServers": {
+					"drawio": {
+						"command": "npx",
+						"args": ["-y", "@drawio/mcp"]
+					}
+				}
+			}`,
+			want: map[string]model.Server{
+				"drawio": {
+					Type:    model.TypeStdio,
+					Command: "npx",
+					Args:    []string{"-y", "@drawio/mcp"},
+				},
+			},
+		},
+		{
 			name:    "unknown_type",
 			input:   `{"mcpServers":{"s":{"type":"grpc"}}}`,
 			wantErr: true,
