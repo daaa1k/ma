@@ -16,6 +16,6 @@ func main() {
 }
 
 func run() error {
-	fmt.Printf("myapp %s\n", version)
+	fmt.Printf("ma %s\n", version)
 	return nil
 }

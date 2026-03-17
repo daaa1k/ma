@@ -1,5 +1,5 @@
 {
-  description = "myapp — TODO: describe your app";
+  description = "ma — TODO: describe your app";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -21,8 +21,8 @@
 
       # Map Nix system strings to GitHub Release artifact names.
       binaryArtifacts = {
-        "x86_64-linux"   = "myapp-linux-x86_64";
-        "aarch64-darwin" = "myapp-macos-aarch64";
+        "x86_64-linux"   = "ma-linux-x86_64";
+        "aarch64-darwin" = "ma-macos-aarch64";
       };
 
       # Build a package wrapping the pre-built GitHub Release binary.
@@ -33,15 +33,15 @@
         let
           system   = pkgs.stdenv.hostPlatform.system;
           artifact = binaryArtifacts.${system}
-            or (throw "myapp-bin: no pre-built binary for ${system}");
+            or (throw "ma-bin: no pre-built binary for ${system}");
           hash     = binaryHashes.${system};
           src = pkgs.fetchurl {
-            url = "https://github.com/daaa1k/myapp/releases/download/v${version}/${artifact}";
+            url = "https://github.com/daaa1k/ma/releases/download/v${version}/${artifact}";
             inherit hash;
           };
         in
         pkgs.stdenv.mkDerivation {
-          pname = "myapp-bin";
+          pname = "ma-bin";
           inherit version src;
 
           dontUnpack = true;
@@ -55,7 +55,7 @@
           ];
 
           installPhase = ''
-            install -Dm755 $src $out/bin/myapp
+            install -Dm755 $src $out/bin/ma
           '';
         };
 
@@ -63,34 +63,34 @@
       #
       # Usage in a Home Manager configuration:
       #
-      #   inputs.myapp.url = "github:daaa1k/myapp";
+      #   inputs.ma.url = "github:daaa1k/ma";
       #
       #   { inputs, ... }: {
-      #     imports = [ inputs.myapp.homeManagerModules.default ];
-      #     programs.myapp = {
+      #     imports = [ inputs.ma.homeManagerModules.default ];
+      #     programs.ma = {
       #       enable = true;
       #       # Use the pre-built binary instead of building from source:
-      #       # package = inputs.myapp.packages.${pkgs.system}.myapp-bin;
+      #       # package = inputs.ma.packages.${pkgs.system}.ma-bin;
       #     };
       #   }
       hmModule = { config, lib, pkgs, ... }:
         let
-          cfg = config.programs.myapp;
+          cfg = config.programs.ma;
         in
         {
-          options.programs.myapp = {
-            enable = lib.mkEnableOption "myapp";
+          options.programs.ma = {
+            enable = lib.mkEnableOption "ma";
 
             package = lib.mkOption {
               type = lib.types.package;
               default = self.packages.${pkgs.system}.default;
-              defaultText = lib.literalExpression "myapp.packages.\${pkgs.system}.default";
+              defaultText = lib.literalExpression "ma.packages.\${pkgs.system}.default";
               description = ''
-                The myapp package to install.
+                The ma package to install.
 
                 Two variants are available:
-                - `myapp.packages.''${pkgs.system}.default` — built from source via buildGoModule (default)
-                - `myapp.packages.''${pkgs.system}.myapp-bin` — pre-built binary from GitHub Releases
+                - `ma.packages.''${pkgs.system}.default` — built from source via buildGoModule (default)
+                - `ma.packages.''${pkgs.system}.ma-bin` — pre-built binary from GitHub Releases
                   (faster setup; no Go compilation required; supports x86_64-linux and aarch64-darwin)
               '';
             };
@@ -105,8 +105,8 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        myapp = pkgs.buildGoModule {
-          pname = "myapp";
+        ma = pkgs.buildGoModule {
+          pname = "ma";
           inherit version;
 
           src = pkgs.lib.cleanSource ./.;
@@ -114,7 +114,7 @@
           # Hash of the Go vendor directory produced by `go mod vendor`.
           # To update after changing go.mod / go.sum:
           #   1. Set vendorHash to pkgs.lib.fakeHash
-          #   2. Run: nix build .#myapp 2>&1 | grep 'got:'
+          #   2. Run: nix build .#ma 2>&1 | grep 'got:'
           #   3. Replace the value below with the hash shown in 'got:'
           vendorHash = null;
 
@@ -122,14 +122,14 @@
 
           meta = with pkgs.lib; {
             description = "TODO: describe your app";
-            homepage    = "https://github.com/daaa1k/myapp";
+            homepage    = "https://github.com/daaa1k/ma";
             license     = licenses.mit;
-            mainProgram = "myapp";
+            mainProgram = "ma";
           };
         };
 
         # Format check: `gofmt -l` on non-vendor Go files must produce no output.
-        fmtCheck = pkgs.runCommandLocal "myapp-fmt" { } ''
+        fmtCheck = pkgs.runCommandLocal "ma-fmt" { } ''
           src=${pkgs.lib.cleanSource ./.}
           unformatted=$(find "$src" -name '*.go' -not -path "*/vendor/*" \
             | xargs ${pkgs.go}/bin/gofmt -l)
@@ -142,12 +142,12 @@
         '';
 
         # Vet check: runs `go vet ./...` against the source.
-        vetCheck = pkgs.runCommandLocal "myapp-vet"
+        vetCheck = pkgs.runCommandLocal "ma-vet"
           { nativeBuildInputs = [ pkgs.go ]; }
           ''
             cp -r ${pkgs.lib.cleanSource ./.} src
             chmod -R u+w src
-            ln -sf ${myapp.goModules} src/vendor
+            ln -sf ${ma.goModules} src/vendor
             cd src
             HOME=$TMPDIR CGO_ENABLED=0 GOFLAGS=-mod=vendor go vet ./...
             touch $out
@@ -156,17 +156,17 @@
       {
         # --- packages ---------------------------------------------------
         packages = {
-          default = myapp;
-          inherit myapp;
+          default = ma;
+          inherit ma;
         } // pkgs.lib.optionalAttrs (binaryArtifacts ? ${system} && binaryHashes.${system} != "") {
-          myapp-bin = mkBinaryPackage pkgs;
+          ma-bin = mkBinaryPackage pkgs;
         };
 
         # --- checks (run by `nix flake check`) --------------------------
         checks = {
-          inherit myapp;
-          myapp-fmt = fmtCheck;
-          myapp-vet = vetCheck;
+          inherit ma;
+          ma-fmt = fmtCheck;
+          ma-vet = vetCheck;
         };
 
         # --- devShell ---------------------------------------------------

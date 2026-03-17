@@ -1,6 +1,6 @@
 # Build output
-myapp
-myapp.exe
+ma
+ma.exe
 *.exe~
 *.dll
 *.so

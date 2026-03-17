@@ -25,8 +25,8 @@ trap 'echo "error: release failed at line $LINENO" >&2' ERR
 # config
 ########################################
 
-APP="myapp"
-REPO="daaa1k/myapp"
+APP="ma"
+REPO="daaa1k/ma"
 WORKFLOW="release.yml"
 
 VERSION="${1:?Usage: scripts/release.sh <version>}"

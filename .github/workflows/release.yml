@@ -10,7 +10,7 @@ permissions:
 
 env:
   # TODO: Change this to your app name
-  APP_NAME: myapp
+  APP_NAME: ma
 
 jobs:
   create-release:
