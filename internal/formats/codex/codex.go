@@ -17,7 +17,6 @@ package codex
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"sort"
 	"strings"
 
@@ -135,7 +134,7 @@ func Encode(cfg *model.Config) ([]byte, []Warning, error) {
 	if err := toml.NewEncoder(&buf).Encode(f); err != nil {
 		return nil, warnings, fmt.Errorf("codex: marshal TOML: %w", err)
 	}
-	return cleanTOML(buf), warnings, nil
+	return cleanTOML(buf.Bytes()), warnings, nil
 }
 
 func fromServer(name string, s model.Server) (serverEntry, []Warning, bool) {
@@ -186,8 +185,8 @@ func fromServer(name string, s model.Server) (serverEntry, []Warning, bool) {
 
 // cleanTOML rewrites the BurntSushi encoder output so that each
 // [mcp_servers.*] table appears on its own line for readability.
-func cleanTOML(buf bytes.Buffer) []byte {
-	lines := strings.Split(buf.String(), "\n")
+func cleanTOML(b []byte) []byte {
+	lines := strings.Split(string(b), "\n")
 	var out []byte
 	for i, line := range lines {
 		if i > 0 && strings.HasPrefix(line, "[mcp_servers.") {
@@ -275,9 +274,3 @@ func tomlStringMap(m map[string]string) string {
 	return "{" + strings.Join(parts, ", ") + "}"
 }
 
-// WriteWarnings writes warnings to w in a human-readable format.
-func WriteWarnings(w io.Writer, warnings []Warning) {
-	for _, warn := range warnings {
-		_, _ = fmt.Fprintf(w, "warning: %s\n", warn.Error())
-	}
-}

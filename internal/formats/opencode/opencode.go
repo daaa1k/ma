@@ -24,7 +24,6 @@ package opencode
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 
 	"github.com/daaa1k/ma/internal/model"
 )
@@ -183,9 +182,3 @@ func fromServer(name string, s model.Server) (serverEntry, []Warning) {
 	}
 }
 
-// WriteWarnings writes warnings to w in a human-readable format.
-func WriteWarnings(w io.Writer, warnings []Warning) {
-	for _, warn := range warnings {
-		_, _ = fmt.Fprintf(w, "warning: %s\n", warn.Error())
-	}
-}

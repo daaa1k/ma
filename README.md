@@ -20,9 +20,9 @@ JSON format and every tool is launched with the same MCP server setup.
 
 | Subcommand | Tool | Target format | Injection method |
 |---|---|---|---|
-| `ma copilot` | GitHub Copilot CLI | Copilot JSON | `--additional-mcp-config <tmpfile>` |
+| `ma copilot` | GitHub Copilot CLI | Copilot JSON | `--additional-mcp-config <json-content>` |
 | `ma opencode` | OpenCode | OpenCode JSON | `OPENCODE_CONFIG=<tmpfile>` |
-| `ma codex` | Codex CLI | TOML | `--config <tmpfile.toml>` |
+| `ma codex` | Codex CLI | TOML | `-c mcp_servers.NAME={...}` (per server) |
 
 ## Transport support
 

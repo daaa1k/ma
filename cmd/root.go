@@ -47,7 +47,6 @@ func newToolCmd(use, short string, l launcher.Launcher, configFlag *string) *cob
 	return &cobra.Command{
 		Use:                use,
 		Short:              short,
-		DisableFlagParsing: false,
 		// Accept any number of positional args so that extra tool args after "--"
 		// are collected by cobra automatically.
 		Args: cobra.ArbitraryArgs,
