@@ -1,3 +1,40 @@
 [tools]
-go = "latest"
+go = "1.24.0"
+golangci-lint = "v2.11.3"
+pinact = "latest"
 prek = "latest"
+
+[tasks.test]
+run = "go test ./... -coverprofile=coverage.out -covermode=count -count=1"
+description = "Run tests with race detector"
+
+[tasks.lint]
+run = [
+  "golangci-lint run ./...",
+  "go vet ./...",
+]
+description = "Run golangci-lint"
+
+[tasks.fmt]
+run = "gofmt -w ."
+description = "Format Go source files"
+
+[tasks."fmt-check"]
+run = """
+#!/usr/bin/env bash
+output=$(gofmt -l .)
+if [ -n "$output" ]; then
+  printf '%s\n' "$output"
+  echo 'Run: mise run fmt'
+  exit 1
+fi
+"""
+description = "Check Go source formatting"
+
+[tasks.build]
+run = "go build -o ma ."
+description = "Build binary"
+
+[tasks.ci]
+depends = ["fmt-check", "lint", "test"]
+description = "Run all CI checks"

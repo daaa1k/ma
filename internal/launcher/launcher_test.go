@@ -166,10 +166,9 @@ func TestLauncherTargetFormats(t *testing.T) {
 	}
 }
 
-// TestRunWritesTempFile verifies that launcher.Run writes a temp file with the
-// correct extension without actually exec'ing (we use a fake binary name that
-// does not exist, so we expect a "not found" error, not a conversion error).
-func TestRunWritesTempFile(t *testing.T) {
+// TestWriteTempConfig verifies that WriteTempConfig writes a temp file with the
+// correct extension and valid content without executing any external binary.
+func TestWriteTempConfig(t *testing.T) {
 	t.Parallel()
 
 	cfg := &model.Config{
@@ -188,25 +187,24 @@ func TestRunWritesTempFile(t *testing.T) {
 		t.Run(l.Name(), func(t *testing.T) {
 			t.Parallel()
 
-			err := launcher.Run(l, cfg, nil, os.Stderr)
-			// We expect an error because the tool binary is not in PATH in tests.
-			// The important thing is that the error is about PATH lookup, not
-			// about config encoding.
-			if err == nil {
-				t.Fatal("expected error (binary not in PATH), got nil")
-			}
-			if strings.Contains(err.Error(), "encode config") {
-				t.Errorf("unexpected encode error: %v", err)
+			path, err := launcher.WriteTempConfig(l, cfg, os.Stderr)
+			if err != nil {
+				t.Fatalf("WriteTempConfig: %v", err)
 			}
 
-			// Verify the temp file was created.
 			ext := ".json"
 			if l.TargetFormat() == convert.FormatCodex {
 				ext = ".toml"
 			}
-			tmpFile := filepath.Join(os.TempDir(), "ma-"+l.Name()+"-mcp-config"+ext)
-			if _, statErr := os.Stat(tmpFile); os.IsNotExist(statErr) {
-				t.Errorf("temp file %s was not created", tmpFile)
+			if !strings.HasSuffix(path, ext) {
+				t.Errorf("expected temp file with extension %s, got %s", ext, path)
+			}
+			data, readErr := os.ReadFile(path)
+			if readErr != nil {
+				t.Fatalf("temp file not readable: %v", readErr)
+			}
+			if len(data) == 0 {
+				t.Error("temp file is empty")
 			}
 		})
 	}

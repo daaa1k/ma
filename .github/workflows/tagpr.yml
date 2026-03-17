@@ -1,0 +1,93 @@
+name: tagpr
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  tagpr:
+    runs-on: ubuntu-latest
+    outputs:
+      tagpr-tag: ${{ steps.run-tagpr.outputs.tag }}
+    permissions:
+      contents: write
+      pull-requests: write
+      packages: write
+      issues: read
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Go
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version-file: go.mod
+
+      - id: run-tagpr
+        name: Run tagpr
+        uses: Songmu/tagpr@b3fb89424646b06c8aa460f50307c60b6a541425 # v1.17.1
+
+  assets:
+    needs: tagpr
+    if: needs.tagpr.outputs.tagpr-tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
+        with:
+          distribution: goreleaser
+          version: latest
+          args: --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+
+  update-nix-hashes:
+    name: Update Nix binary hashes
+    needs: assets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+
+      - name: Fetch binary hashes and update flake.nix
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          BASE="https://github.com/daaa1k/ma/releases/download/${VERSION}"
+          LINUX_HASH=$(curl -fsSL "${BASE}/ma-linux-amd64" | sha256sum | awk '{print $1}')
+          MACOS_HASH=$(curl -fsSL "${BASE}/ma-darwin-arm64" | sha256sum | awk '{print $1}')
+          echo "linux amd64: $LINUX_HASH"
+          echo "darwin arm64: $MACOS_HASH"
+          sed -i "s|\"x86_64-linux\".*=.*\"[^\"]*\"|\"x86_64-linux\"   = \"$LINUX_HASH\"|" flake.nix
+          sed -i "s|\"aarch64-darwin\".*=.*\"[^\"]*\"|\"aarch64-darwin\" = \"$MACOS_HASH\"|" flake.nix
+
+      - name: Commit updated flake.nix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add flake.nix
+          git diff --staged --quiet || git commit -m "chore(nix): update binary hashes for ${{ github.ref_name }}"
+          git push origin main

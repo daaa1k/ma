@@ -1,0 +1,56 @@
+version: 2
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    flags:
+      - -trimpath
+
+archives:
+  # Raw binary for Nix flake.nix (fetchurl + dontUnpack = true)
+  - id: raw
+    format: binary
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+  # Archives for Homebrew and general distribution
+  - id: archive
+    ids: []
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+# Homebrew tap auto-update
+brews:
+  - repository:
+      owner: daaa1k
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/daaa1k/ma"
+    description: "MCP config adapter and tool launcher for AI coding tools"
+    license: "MIT"
+    directory: Formula
+    test: |
+      system "#{bin}/ma", "--help"
+    install: |
+      bin.install "ma"

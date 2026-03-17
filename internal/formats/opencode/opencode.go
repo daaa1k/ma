@@ -113,7 +113,7 @@ func toServer(name string, e serverEntry) (model.Server, []Warning, error) {
 	}
 }
 
-// Encode serialises the canonical config into OpenCode JSON format.
+// Encode serializes the canonical config into OpenCode JSON format.
 // Both HTTP and SSE are encoded as type "remote" (OpenCode makes no distinction).
 func Encode(cfg *model.Config) ([]byte, []Warning, error) {
 	f := configFile{
