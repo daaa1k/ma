@@ -24,7 +24,7 @@ func NewRootCmd(version string) *cobra.Command {
 
 Source config (Claude Code JSON format, searched in order):
   1. --config flag
-  2. ./mcp.json  (current directory)
+  2. ./.mcp.json  (current directory)
   3. ~/.mcp.json (home directory)
 
 Supported tools: copilot, opencode, codex`,
@@ -82,14 +82,14 @@ func loadConfig(flagPath string) (*model.Config, error) {
 		return cfg, nil
 	}
 
-	return nil, fmt.Errorf("no MCP config found; tried: %v\nCreate mcp.json or use --config", candidates)
+	return nil, fmt.Errorf("no MCP config found; tried: %v\nCreate .mcp.json or use --config", candidates)
 }
 
 func resolveCandidates(flagPath string) []string {
 	if flagPath != "" {
 		return []string{flagPath}
 	}
-	candidates := []string{"mcp.json"}
+	candidates := []string{".mcp.json"}
 	if home, err := os.UserHomeDir(); err == nil {
 		candidates = append(candidates, filepath.Join(home, ".mcp.json"))
 	}
