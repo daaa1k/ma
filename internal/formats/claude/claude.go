@@ -91,7 +91,7 @@ func toServer(name string, e serverEntry) (model.Server, error) {
 	}
 }
 
-// Encode serialises the canonical config into Claude Code JSON format.
+// Encode serializes the canonical config into Claude Code JSON format.
 func Encode(cfg *model.Config) ([]byte, error) {
 	f := configFile{MCPServers: make(map[string]serverEntry, len(cfg.Servers))}
 	for name, s := range cfg.Servers {

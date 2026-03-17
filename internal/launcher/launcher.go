@@ -46,6 +46,23 @@ type Launcher interface {
 	EnvVars(configFile string) []string
 }
 
+// WriteTempConfig encodes cfg to the launcher's target format and writes the
+// result to a deterministic temp file. It returns the file path on success.
+// Warnings are written to errW.
+func WriteTempConfig(l Launcher, cfg *model.Config, errW io.Writer) (string, error) {
+	result, err := convert.Encode(l.TargetFormat(), cfg)
+	if err != nil {
+		return "", fmt.Errorf("encode config for %s: %w", l.Name(), err)
+	}
+	convert.WriteWarnings(errW, result.Warnings)
+
+	tmpFile := filepath.Join(os.TempDir(), fmt.Sprintf("ma-%s-mcp-config%s", l.Name(), configExt(l.TargetFormat())))
+	if err := os.WriteFile(tmpFile, result.Data, 0o600); err != nil {
+		return "", fmt.Errorf("write temp config: %w", err)
+	}
+	return tmpFile, nil
+}
+
 // Run is the shared entry-point used by every tool subcommand.
 // It:
 //  1. Encodes the canonical config to the launcher's target format.
@@ -54,15 +71,9 @@ type Launcher interface {
 //
 // Warnings are written to errW (typically os.Stderr).
 func Run(l Launcher, cfg *model.Config, extraArgs []string, errW io.Writer) error {
-	result, err := convert.Encode(l.TargetFormat(), cfg)
+	tmpFile, err := WriteTempConfig(l, cfg, errW)
 	if err != nil {
-		return fmt.Errorf("encode config for %s: %w", l.Name(), err)
-	}
-	convert.WriteWarnings(errW, result.Warnings)
-
-	tmpFile := filepath.Join(os.TempDir(), fmt.Sprintf("ma-%s-mcp-config%s", l.Name(), configExt(l.TargetFormat())))
-	if err := os.WriteFile(tmpFile, result.Data, 0o600); err != nil {
-		return fmt.Errorf("write temp config: %w", err)
+		return err
 	}
 
 	argv := l.BuildArgs(tmpFile, extraArgs)

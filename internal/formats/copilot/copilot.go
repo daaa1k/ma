@@ -108,7 +108,7 @@ func toServer(name string, e serverEntry) (model.Server, []Warning, error) {
 	}
 }
 
-// Encode serialises the canonical config into Copilot CLI JSON format.
+// Encode serializes the canonical config into Copilot CLI JSON format.
 // The "tools" field is preserved if present in the canonical model.
 // When converting from formats that do not support "tools", the field is omitted.
 func Encode(cfg *model.Config) ([]byte, []Warning, error) {

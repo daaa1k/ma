@@ -108,7 +108,7 @@ func toServer(name string, e serverEntry) (*model.Server, []Warning) {
 	}, warnings
 }
 
-// Encode serialises the canonical config into Codex TOML format.
+// Encode serializes the canonical config into Codex TOML format.
 // SSE servers are skipped with a warning because Codex does not support SSE.
 func Encode(cfg *model.Config) ([]byte, []Warning, error) {
 	f := configFile{MCPServers: make(map[string]serverEntry, len(cfg.Servers))}
@@ -223,7 +223,7 @@ func BuildConfigOverrides(data []byte) ([]string, error) {
 	return args, nil
 }
 
-// serverToInlineTOML serialises a serverEntry as a TOML inline table string.
+// serverToInlineTOML serializes a serverEntry as a TOML inline table string.
 func serverToInlineTOML(e serverEntry) string {
 	var parts []string
 	if e.Command != "" {

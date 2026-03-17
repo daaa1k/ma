@@ -21,8 +21,8 @@
 
       # Map Nix system strings to GitHub Release artifact names.
       binaryArtifacts = {
-        "x86_64-linux"   = "ma-linux-x86_64";
-        "aarch64-darwin" = "ma-macos-aarch64";
+        "x86_64-linux"   = "ma-linux-amd64";
+        "aarch64-darwin" = "ma-darwin-arm64";
       };
 
       # Build a package wrapping the pre-built GitHub Release binary.
@@ -111,12 +111,13 @@
 
           src = pkgs.lib.cleanSource ./.;
 
-          # Hash of the Go vendor directory produced by `go mod vendor`.
+          # Hash of the Go vendor directory fetched by Nix.
+          # vendor/ is not committed; Nix fetches modules via go.sum.
           # To update after changing go.mod / go.sum:
           #   1. Set vendorHash to pkgs.lib.fakeHash
           #   2. Run: nix build .#ma 2>&1 | grep 'got:'
           #   3. Replace the value below with the hash shown in 'got:'
-          vendorHash = null;
+          vendorHash = "sha256-n58Qmiv3gik1qkuXQFbQ+soeOQtUz1dUocEAJepqp/E=";
 
           ldflags = [ "-s" "-w" "-X main.version=${version}" ];
 

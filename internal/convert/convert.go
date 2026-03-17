@@ -116,7 +116,7 @@ func encode(f Format, cfg *model.Config) ([]byte, []string, error) {
 	}
 }
 
-// Encode serialises a canonical config into the given format and returns the
+// Encode serializes a canonical config into the given format and returns the
 // result bytes plus any non-fatal warnings. It is the counterpart of Decode and
 // is used by the launcher package to avoid an unnecessary JSON round-trip.
 func Encode(dst Format, cfg *model.Config) (*Result, error) {
