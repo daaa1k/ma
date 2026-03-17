@@ -1,0 +1,37 @@
+# Build output
+myapp
+myapp.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Code coverage and profiling
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+*.prof
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Environment
+.env
+
+# Nix build outputs
+result
+result-*
+.direnv/
+
+# Editor/IDE
+.idea/
+.vscode/
+.cursor/
+
+# macOS
+.DS_Store
