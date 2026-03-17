@@ -1,6 +1,7 @@
 # ma — MCP config adapter
 
-`ma` は共通の MCP サーバー設定ファイルを読み込み、各 AI コーディングツールのネイティブ形式に変換してツールを起動するランチャーです。
+`ma` reads a single shared MCP server config and launches AI coding tools with
+the config automatically adapted to each tool's native format.
 
 ```
 ma copilot
@@ -9,28 +10,29 @@ ma codex -- --some-flag
 ma --version
 ```
 
-## 動機
+## Motivation
 
-Claude Code・GitHub Copilot CLI・OpenCode・Codex はそれぞれ独自の MCP 設定形式を持ちます。
-`ma` は Claude Code JSON 形式の設定ファイル 1 つを管理するだけで、すべてのツールを同じ MCP サーバー構成で利用できるようにします。
+Claude Code, GitHub Copilot CLI, OpenCode, and Codex each have their own MCP
+configuration format. With `ma`, you maintain one config file in Claude Code
+JSON format and every tool is launched with the same MCP server setup.
 
-## 対応ツールと設定注入方法
+## Supported tools
 
-| サブコマンド | ツール | 変換形式 | 注入方法 |
+| Subcommand | Tool | Target format | Injection method |
 |---|---|---|---|
 | `ma copilot` | GitHub Copilot CLI | Copilot JSON | `--additional-mcp-config <tmpfile>` |
 | `ma opencode` | OpenCode | OpenCode JSON | `OPENCODE_CONFIG=<tmpfile>` |
 | `ma codex` | Codex CLI | TOML | `--config <tmpfile.toml>` |
 
-## 対応トランスポート
+## Transport support
 
-| トランスポート | copilot | opencode | codex |
+| Transport | copilot | opencode | codex |
 |---|---|---|---|
 | stdio | ✅ | ✅ | ✅ |
 | Streamable HTTP | ✅ | ✅ | ✅ |
-| SSE | ✅ | ✅ (remote として) | ⚠️ スキップ＋警告 |
+| SSE | ✅ | ✅ (as `remote`) | ⚠️ skipped with warning |
 
-## インストール
+## Installation
 
 ### Homebrew
 
@@ -40,13 +42,13 @@ brew install daaa1k/tap/ma
 
 ### Nix (Home Manager)
 
-`flake.nix` に追加：
+Add to your `flake.nix`:
 
 ```nix
 inputs.ma.url = "github:daaa1k/ma";
 ```
 
-Home Manager 設定：
+Home Manager configuration:
 
 ```nix
 { inputs, ... }: {
@@ -61,15 +63,16 @@ Home Manager 設定：
 go install github.com/daaa1k/ma@latest
 ```
 
-## 設定ファイル
+## Configuration
 
-Claude Code JSON 形式で記述します。以下の順で検索されます：
+Write your MCP servers in Claude Code JSON format. `ma` searches for the config
+file in the following order:
 
-1. `--config` フラグ
-2. `./.mcp.json`（カレントディレクトリ）
-3. `~/.mcp.json`（ホームディレクトリ）
+1. `--config` flag
+2. `./.mcp.json` (current directory)
+3. `~/.mcp.json` (home directory)
 
-### 記述例
+### Example
 
 ```json
 {
@@ -94,79 +97,80 @@ Claude Code JSON 形式で記述します。以下の順で検索されます：
 }
 ```
 
-### 対応フィールド
+### Fields
 
-**stdio サーバー**
+**stdio servers**
 
-| フィールド | 型 | 説明 |
+| Field | Type | Description |
 |---|---|---|
-| `type` | `"stdio"` | トランスポート種別 |
-| `command` | string | 実行コマンド |
-| `args` | string[] | コマンド引数 |
-| `env` | object | 環境変数 |
+| `type` | `"stdio"` | Transport type |
+| `command` | string | Executable to run |
+| `args` | string[] | Command arguments |
+| `env` | object | Environment variables |
 
-**Streamable HTTP / SSE サーバー**
+**Streamable HTTP / SSE servers**
 
-| フィールド | 型 | 説明 |
+| Field | Type | Description |
 |---|---|---|
-| `type` | `"http"` または `"sse"` | トランスポート種別 |
-| `url` | string | エンドポイント URL |
-| `headers` | object | HTTP ヘッダー（認証など） |
+| `type` | `"http"` or `"sse"` | Transport type |
+| `url` | string | Endpoint URL |
+| `headers` | object | HTTP headers (e.g. auth) |
 
-環境変数の参照は `${VAR_NAME}` 構文で記述します。
+Environment variable references use `${VAR_NAME}` syntax.
 
-## 使い方
+## Usage
 
-### 基本
+### Basic
 
 ```sh
-# .mcp.json を読み込んで opencode を起動
+# Launch opencode using .mcp.json in the current directory
 ma opencode
 
-# copilot を起動（-- 以降はツールへの追加引数）
+# Launch copilot and pass extra flags (everything after -- goes to the tool)
 ma copilot -- --disable-builtin-mcps
 
-# 設定ファイルを明示指定
+# Specify a config file explicitly
 ma --config ~/work/mcp.json codex
 ```
 
-### バージョン確認
+### Version
 
 ```sh
 ma --version
 ```
 
-### ヘルプ
+### Help
 
 ```sh
 ma --help
 ma copilot --help
 ```
 
-## 変換の注意点
+## Conversion caveats
 
-変換時に情報が失われる場合、`ma` は stderr に警告を出力します。
+When a field cannot be represented in the target format, `ma` prints a warning
+to stderr and continues.
 
-| 状況 | 挙動 |
+| Situation | Behavior |
 |---|---|
-| SSE サーバー → Codex | そのサーバーをスキップ＋警告 |
-| SSE サーバー → OpenCode | `"remote"` 型に変換＋警告 |
-| Copilot `tools` フィールド → 他形式 | フィールドを破棄＋警告 |
-| Codex `bearer_token_env_var` → 他形式 | `Authorization: Bearer ${VAR}` ヘッダーに変換＋情報 |
+| SSE server → Codex | Server skipped + warning |
+| SSE server → OpenCode | Encoded as `"remote"` type + warning |
+| Copilot `tools` field → other formats | Field dropped + warning |
+| Codex `bearer_token_env_var` → other formats | Converted to `Authorization: Bearer ${VAR}` header + info |
 
-## 開発
+## Development
 
 ```sh
-# ビルド
+# Build
 go build ./...
 
-# テスト（race detector 付き）
+# Test (with race detector)
 go test -race ./...
 
 # Lint
 golangci-lint run ./...
 ```
 
-## ライセンス
+## License
 
 MIT

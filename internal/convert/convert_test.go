@@ -108,9 +108,9 @@ func TestConvert(t *testing.T) {
 			wantAbsent:   []string{"sse-srv"},
 		},
 		{
-			name:         "codex_to_claude_bearer_converted",
-			src:          convert.FormatCodex,
-			dst:          convert.FormatClaude,
+			name: "codex_to_claude_bearer_converted",
+			src:  convert.FormatCodex,
+			dst:  convert.FormatClaude,
 			input: `[mcp_servers.figma]
 url = "https://mcp.figma.com/mcp"
 bearer_token_env_var = "FIGMA_TOKEN"
@@ -119,24 +119,24 @@ bearer_token_env_var = "FIGMA_TOKEN"
 			wantContains: []string{`"Bearer ${FIGMA_TOKEN}"`},
 		},
 		{
-			name:  "opencode_to_copilot",
-			src:   convert.FormatOpenCode,
-			dst:   convert.FormatCopilot,
-			input: `{"mcp":{"srv":{"type":"local","command":["npx","-y","pkg"],"enabled":true}}}`,
+			name:         "opencode_to_copilot",
+			src:          convert.FormatOpenCode,
+			dst:          convert.FormatCopilot,
+			input:        `{"mcp":{"srv":{"type":"local","command":["npx","-y","pkg"],"enabled":true}}}`,
 			wantContains: []string{`"local"`, `"npx"`},
 		},
 		{
-			name:    "unknown_src_format",
-			src:     "unknown",
-			dst:     convert.FormatClaude,
-			input:   `{}`,
+			name:         "unknown_src_format",
+			src:          "unknown",
+			dst:          convert.FormatClaude,
+			input:        `{}`,
 			wantWarnings: -1, // signal "expect error"
 		},
 		{
-			name:    "unknown_dst_format",
-			src:     convert.FormatClaude,
-			dst:     "unknown",
-			input:   `{"mcpServers":{}}`,
+			name:         "unknown_dst_format",
+			src:          convert.FormatClaude,
+			dst:          "unknown",
+			input:        `{"mcpServers":{}}`,
 			wantWarnings: -1,
 		},
 	}

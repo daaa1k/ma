@@ -10,8 +10,8 @@ import "github.com/daaa1k/ma/internal/convert"
 //	copilot --additional-mcp-config <tmpfile> [extra-args...]
 type CopilotLauncher struct{}
 
-func (CopilotLauncher) Name() string                { return "copilot" }
-func (CopilotLauncher) Binary() string              { return "copilot" }
+func (CopilotLauncher) Name() string                 { return "copilot" }
+func (CopilotLauncher) Binary() string               { return "copilot" }
 func (CopilotLauncher) TargetFormat() convert.Format { return convert.FormatCopilot }
 
 func (CopilotLauncher) BuildArgs(configFile string, extraArgs []string) []string {

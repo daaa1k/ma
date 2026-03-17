@@ -10,8 +10,8 @@ import "github.com/daaa1k/ma/internal/convert"
 //	codex --config <tmpfile.toml> [extra-args...]
 type CodexLauncher struct{}
 
-func (CodexLauncher) Name() string                { return "codex" }
-func (CodexLauncher) Binary() string              { return "codex" }
+func (CodexLauncher) Name() string                 { return "codex" }
+func (CodexLauncher) Binary() string               { return "codex" }
 func (CodexLauncher) TargetFormat() convert.Format { return convert.FormatCodex }
 
 func (CodexLauncher) BuildArgs(configFile string, extraArgs []string) []string {

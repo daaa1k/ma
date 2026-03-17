@@ -13,8 +13,8 @@ import "github.com/daaa1k/ma/internal/convert"
 //	OPENCODE_CONFIG=<tmpfile> opencode [extra-args...]
 type OpenCodeLauncher struct{}
 
-func (OpenCodeLauncher) Name() string                { return "opencode" }
-func (OpenCodeLauncher) Binary() string              { return "opencode" }
+func (OpenCodeLauncher) Name() string                 { return "opencode" }
+func (OpenCodeLauncher) Binary() string               { return "opencode" }
 func (OpenCodeLauncher) TargetFormat() convert.Format { return convert.FormatOpenCode }
 
 func (OpenCodeLauncher) BuildArgs(_ string, extraArgs []string) []string {
