@@ -16,8 +16,8 @@
       #   nix store prefetch-file --hash-type sha256 --json <url>
       # Leave as "" to disable the ma-bin package for that platform.
       binaryHashes = {
-        "x86_64-linux"   = "sha256-kgo0qjWKnC306el5BqehD0dNHpI999BLrn0bhRymUn8=";
-        "aarch64-darwin" = "sha256-LyUMcV+abiwtBTnLLSC/39aZc/hG4GIdGN5rhAFlaOE=";
+        "x86_64-linux"   = "sha256-XZRCUf7nZdsgxZeuRL2th8X3UtqEQpHwnWsHp6oIV18=";
+        "aarch64-darwin" = "sha256-5hhzf4+Jy5x/s7xpVZcjvcfnXHZMMgpp1JdntHFsbZg=";
       };
 
       # Map Nix system strings to GitHub Release artifact names.
