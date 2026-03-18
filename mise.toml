@@ -50,5 +50,5 @@ gocredits -w .
 [tasks.prerelease-for-tagpr]
 depends = ["credits"]
 run = """
-git add CREDITS go.mod go.sum
+git add CHANGELOG.md CREDITS go.mod go.sum
 """
