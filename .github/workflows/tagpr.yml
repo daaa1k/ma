@@ -74,12 +74,20 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           BASE="https://github.com/daaa1k/ma/releases/download/${VERSION}"
-          LINUX_HASH=$(curl -fsSL "${BASE}/ma-linux-amd64" | sha256sum | awk '{print $1}')
-          MACOS_HASH=$(curl -fsSL "${BASE}/ma-darwin-arm64" | sha256sum | awk '{print $1}')
+          # Compute SRI-format hashes (sha256-<base64>) required by Nix fetchurl's `hash` attribute.
+          LINUX_HASH=$(curl -fsSL "${BASE}/ma-linux-amd64" | sha256sum | awk '{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
+          MACOS_HASH=$(curl -fsSL "${BASE}/ma-darwin-arm64" | sha256sum | awk '{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
           echo "linux amd64: $LINUX_HASH"
           echo "darwin arm64: $MACOS_HASH"
-          sed -i "s|\"x86_64-linux\".*=.*\"[^\"]*\"|\"x86_64-linux\"   = \"$LINUX_HASH\"|" flake.nix
-          sed -i "s|\"aarch64-darwin\".*=.*\"[^\"]*\"|\"aarch64-darwin\" = \"$MACOS_HASH\"|" flake.nix
+          # Update only the binaryHashes block (not binaryArtifacts).
+          # Matches the second quoted string on each line (the value, not the key) within the block.
+          awk -v linux="$LINUX_HASH" -v macos="$MACOS_HASH" '
+            /binaryHashes = \{/ { in_hashes=1 }
+            in_hashes && /\};/ { in_hashes=0 }
+            in_hashes && /"x86_64-linux"/   { sub(/"[^"]*";/, "\"" linux "\";") }
+            in_hashes && /"aarch64-darwin"/ { sub(/"[^"]*";/, "\"" macos "\";") }
+            { print }
+          ' flake.nix > flake.nix.tmp && mv flake.nix.tmp flake.nix
 
       - name: Commit updated flake.nix
         run: |

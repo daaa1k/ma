@@ -14,15 +14,16 @@
       # Pre-built binary hashes for each supported platform.
       # Update these whenever a new version is released:
       #   nix store prefetch-file --hash-type sha256 --json <url>
+      # Leave as "" to disable the ma-bin package for that platform.
       binaryHashes = {
-        "x86_64-linux"   = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"; # TODO: fill in after first release
-        "aarch64-darwin" = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"; # TODO: fill in after first release
+        "x86_64-linux"   = ""; # TODO: fill in after first release
+        "aarch64-darwin" = ""; # TODO: fill in after first release
       };
 
       # Map Nix system strings to GitHub Release artifact names.
       binaryArtifacts = {
-        "x86_64-linux"   = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
-        "aarch64-darwin" = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+        "x86_64-linux"   = "ma-linux-amd64";
+        "aarch64-darwin" = "ma-darwin-arm64";
       };
 
       # Build a package wrapping the pre-built GitHub Release binary.
