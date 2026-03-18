@@ -152,8 +152,9 @@ to stderr and continues.
 |---|---|
 | SSE server → Codex | Server skipped + warning |
 | SSE server → OpenCode | Encoded as `"remote"` type + warning |
-| Copilot `tools` field → other formats | Field dropped + warning |
-| Codex `bearer_token_env_var` → other formats | Converted to `Authorization: Bearer ${VAR}` header + info |
+| Copilot `tools` field → OpenCode | Field dropped + warning |
+| Copilot `tools` field → Codex / Claude Code | Field dropped silently |
+| Codex `bearer_token_env_var` → other formats | Converted to `Authorization: Bearer ${VAR}` header + warning |
 
 ## Development
 
