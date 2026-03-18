@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.7](https://github.com/daaa1k/ma/compare/v0.1.6...v0.1.7) - 2026-03-18
+- fix nix rel by @daaa1k in https://github.com/daaa1k/ma/pull/16
+
 ## [v0.1.6](https://github.com/daaa1k/ma/compare/v0.1.5...v0.1.6) - 2026-03-18
 - ci: fix nix release flow by @daaa1k in https://github.com/daaa1k/ma/pull/15
 
