@@ -74,9 +74,11 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           BASE="https://github.com/daaa1k/ma/releases/download/${VERSION}"
-          # Compute SRI-format hashes (sha256-<base64>) required by Nix fetchurl's `hash` attribute.
-          LINUX_HASH=$(curl -fsSL "${BASE}/ma-linux-amd64" | sha256sum | awk '{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
-          MACOS_HASH=$(curl -fsSL "${BASE}/ma-darwin-arm64" | sha256sum | awk '{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
+          # Use checksums.txt (already computed by goreleaser) instead of re-downloading binaries.
+          # Convert hex SHA256 → SRI format (sha256-<base64>) required by Nix fetchurl's `hash` attribute.
+          CHECKSUMS=$(curl -fsSL "${BASE}/checksums.txt")
+          LINUX_HASH=$(echo "$CHECKSUMS" | awk '/ma-linux-amd64$/{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
+          MACOS_HASH=$(echo "$CHECKSUMS"  | awk '/ma-darwin-arm64$/{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
           echo "linux amd64: $LINUX_HASH"
           echo "darwin arm64: $MACOS_HASH"
           # Update only the binaryHashes block (not binaryArtifacts).
