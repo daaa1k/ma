@@ -41,7 +41,8 @@ changelog:
 
 # Homebrew tap auto-update
 brews:
-  - repository:
+  - ids: [archive]
+    repository:
       owner: daaa1k
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
