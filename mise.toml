@@ -38,3 +38,17 @@ description = "Build binary"
 [tasks.ci]
 depends = ["fmt-check", "lint", "test"]
 description = "Run all CI checks"
+
+[tasks.credits]
+depends = ["credits"]
+run = """
+go install github.com/Songmu/gocredits/cmd/gocredits@latest
+go mod download
+gocredits -w .
+"""
+
+[tasks.prerelease-for-tagpr]
+depends = ["credits"]
+run = """
+git add CREDITS go.mod go.sum
+"""
