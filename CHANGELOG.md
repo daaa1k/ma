@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.3](https://github.com/daaa1k/ma/compare/v0.1.2...v0.1.3) - 2026-03-18
+- ci: fix release flow by @daaa1k in https://github.com/daaa1k/ma/pull/8
+
 ## [v0.1.2](https://github.com/daaa1k/ma/compare/v0.1.1...v0.1.2) - 2026-03-18
 - Remove duplicate WriteWarnings functions and clean up unused imports by @daaa1k in https://github.com/daaa1k/ma/pull/3
 - feat: adopt best practices for go by @daaa1k in https://github.com/daaa1k/ma/pull/4
