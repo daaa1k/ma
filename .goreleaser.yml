@@ -27,7 +27,9 @@ archives:
         format: zip
     files:
       - LICENSE
+      - CREDITS
       - README.md
+      - CHANGELOG.md
 
 checksum:
   name_template: "checksums.txt"
