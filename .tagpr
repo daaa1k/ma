@@ -1,3 +1,8 @@
 [tagpr]
-versionFile = "VERSION"
-releaseBranch = "main"
+vPrefix = true
+releaseBranch = main
+release = draft
+versionFile = VERSION
+command = "mise run prerelease-for-tagpr"
+majorLabels = "tagpr:major"
+minorLabels = "tagpr:minor"

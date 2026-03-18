@@ -4,13 +4,13 @@ repos:
       - id: go-fmt
         name: go fmt
         language: system
-        entry: mise exec -- gofmt -w
+        entry: mise run fmt
         types: [go]
-        pass_filenames: true
+        pass_filenames: false
 
-      - id: go-vet
-        name: go vet
+      - id: go-lint
+        name: go lint
         language: system
-        entry: mise exec -- go vet ./...
+        entry: mise run lint
         types: [go]
         pass_filenames: false

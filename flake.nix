@@ -105,7 +105,10 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        ma = pkgs.buildGoModule {
+        # Use Go 1.26 to match go.mod requirement.
+        go = pkgs.go_1_26;
+
+        ma = (pkgs.buildGoModule.override { inherit go; }) {
           pname = "ma";
           inherit version;
 
@@ -117,7 +120,7 @@
           #   1. Set vendorHash to pkgs.lib.fakeHash
           #   2. Run: nix build .#ma 2>&1 | grep 'got:'
           #   3. Replace the value below with the hash shown in 'got:'
-          vendorHash = "sha256-n58Qmiv3gik1qkuXQFbQ+soeOQtUz1dUocEAJepqp/E=";
+          vendorHash = "sha256-f7cmgTwgkon4SbuR7RsKIALDH0l/5L0CFa4jF6xrGTM=";
 
           ldflags = [ "-s" "-w" "-X main.version=${version}" ];
 
@@ -133,7 +136,7 @@
         fmtCheck = pkgs.runCommandLocal "ma-fmt" { } ''
           src=${pkgs.lib.cleanSource ./.}
           unformatted=$(find "$src" -name '*.go' -not -path "*/vendor/*" \
-            | xargs ${pkgs.go}/bin/gofmt -l)
+            | xargs ${go}/bin/gofmt -l)
           if [ -n "$unformatted" ]; then
             echo "gofmt found unformatted files — run: gofmt -w ."
             echo "$unformatted"
@@ -144,7 +147,7 @@
 
         # Vet check: runs `go vet ./...` against the source.
         vetCheck = pkgs.runCommandLocal "ma-vet"
-          { nativeBuildInputs = [ pkgs.go ]; }
+          { nativeBuildInputs = [ go ]; }
           ''
             cp -r ${pkgs.lib.cleanSource ./.} src
             chmod -R u+w src
@@ -172,11 +175,11 @@
 
         # --- devShell ---------------------------------------------------
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
+          packages = [
             go
-            gopls
-            gotools
-            golangci-lint
+            pkgs.gopls
+            pkgs.gotools
+            pkgs.golangci-lint
           ];
         };
       }
