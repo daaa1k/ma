@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.5](https://github.com/daaa1k/ma/compare/v0.1.4...v0.1.5) - 2026-03-18
+- ci: fix nix release flow by @daaa1k in https://github.com/daaa1k/ma/pull/12
+
 ## [v0.1.4](https://github.com/daaa1k/ma/compare/v0.1.3...v0.1.4) - 2026-03-18
 - ci: add deploykey for update nix flow by @daaa1k in https://github.com/daaa1k/ma/pull/10
 
