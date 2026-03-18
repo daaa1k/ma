@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.8](https://github.com/daaa1k/ma/compare/v0.1.7...v0.1.8) - 2026-03-18
+- chore: add missing files to the zip by @daaa1k in https://github.com/daaa1k/ma/pull/19
+
 ## [v0.1.7](https://github.com/daaa1k/ma/compare/v0.1.6...v0.1.7) - 2026-03-18
 - fix nix rel by @daaa1k in https://github.com/daaa1k/ma/pull/16
 
