@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.9](https://github.com/daaa1k/ma/compare/v0.1.8...v0.1.9) - 2026-03-18
+- ci: suppress cascading by @daaa1k in https://github.com/daaa1k/ma/pull/21
+
 ## [v0.1.8](https://github.com/daaa1k/ma/compare/v0.1.7...v0.1.8) - 2026-03-18
 - chore: add missing files to the zip by @daaa1k in https://github.com/daaa1k/ma/pull/19
 
