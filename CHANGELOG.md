@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.6](https://github.com/daaa1k/ma/compare/v0.1.5...v0.1.6) - 2026-03-18
+- ci: fix nix release flow by @daaa1k in https://github.com/daaa1k/ma/pull/15
+
 ## [v0.1.5](https://github.com/daaa1k/ma/compare/v0.1.4...v0.1.5) - 2026-03-18
 - ci: fix nix release flow by @daaa1k in https://github.com/daaa1k/ma/pull/12
 
