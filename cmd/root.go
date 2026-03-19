@@ -2,7 +2,9 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 
@@ -68,7 +70,7 @@ func loadConfig(flagPath string) (*model.Config, error) {
 
 	for _, path := range candidates {
 		data, err := os.ReadFile(path)
-		if os.IsNotExist(err) {
+		if errors.Is(err, fs.ErrNotExist) {
 			continue
 		}
 		if err != nil {
