@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.1.10](https://github.com/daaa1k/ma/compare/v0.1.9...v0.1.10) - 2026-03-19
+- Update format conversion documentation for Copilot tools field by @daaa1k in https://github.com/daaa1k/ma/pull/22
+- ci: fix flows by @daaa1k in https://github.com/daaa1k/ma/pull/24
+- ci: remove redundant nix build step and cache-nix-action by @daaa1k in https://github.com/daaa1k/ma/pull/25
+- chore: add ci configs by @daaa1k in https://github.com/daaa1k/ma/pull/26
+- migrate: homebrew formula to homebrew cask by @daaa1k in https://github.com/daaa1k/ma/pull/27
+
 ## [v0.1.9](https://github.com/daaa1k/ma/compare/v0.1.8...v0.1.9) - 2026-03-18
 - ci: suppress cascading by @daaa1k in https://github.com/daaa1k/ma/pull/21
 
