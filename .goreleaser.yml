@@ -42,7 +42,7 @@ changelog:
       - "^test:"
 
 # Homebrew tap auto-update
-brews:
+homebrew_casks:
   - ids: [archive]
     repository:
       owner: daaa1k
@@ -51,8 +51,6 @@ brews:
     homepage: "https://github.com/daaa1k/ma"
     description: "MCP config adapter and tool launcher for AI coding tools"
     license: "MIT"
-    directory: Formula
-    test: |
-      system "#{bin}/ma", "--help"
-    install: |
-      bin.install "ma"
+    directory: Casks
+    binaries:
+      - ma
