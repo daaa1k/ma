@@ -2,6 +2,10 @@
 
 ## [v0.1.11](https://github.com/daaa1k/ma/compare/v0.1.10...v0.1.11) - 2026-03-20
 - fix: resolve remaining DEPRECATED warnings in goreleaser and Go code by @daaa1k in https://github.com/daaa1k/ma/pull/28
+- Release for v0.1.11 by @github-actions[bot] in https://github.com/daaa1k/ma/pull/29
+
+## [v0.1.11](https://github.com/daaa1k/ma/compare/v0.1.10...v0.1.11) - 2026-03-20
+- fix: resolve remaining DEPRECATED warnings in goreleaser and Go code by @daaa1k in https://github.com/daaa1k/ma/pull/28
 
 ## [v0.1.10](https://github.com/daaa1k/ma/compare/v0.1.9...v0.1.10) - 2026-03-19
 - Update format conversion documentation for Copilot tools field by @daaa1k in https://github.com/daaa1k/ma/pull/22
