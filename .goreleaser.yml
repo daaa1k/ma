@@ -16,7 +16,7 @@ builds:
 archives:
   # Raw binary for Nix flake.nix (fetchurl + dontUnpack = true)
   - id: raw
-    format: binary
+    formats: [binary]
     name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
   # Archives for Homebrew and general distribution
   - id: archive
@@ -24,7 +24,7 @@ archives:
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [zip]
     files:
       - LICENSE
       - CREDITS
@@ -54,3 +54,9 @@ homebrew_casks:
     directory: Casks
     binaries:
       - ma
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/ma"]
+          end

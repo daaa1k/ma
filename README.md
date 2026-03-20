@@ -37,7 +37,7 @@ JSON format and every tool is launched with the same MCP server setup.
 ### Homebrew
 
 ```sh
-brew install daaa1k/tap/ma
+brew install --cask daaa1k/tap/ma
 ```
 
 ### Nix (Home Manager)
