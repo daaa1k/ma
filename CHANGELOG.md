@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.12](https://github.com/daaa1k/ma/compare/v0.1.11...v0.1.12) - 2026-03-28
+- ci: bump cachix/cachix-action from 16 to 17 by @dependabot[bot] in https://github.com/daaa1k/ma/pull/31
+- chore: apply template by @daaa1k in https://github.com/daaa1k/ma/pull/33
+- chore: update template by @daaa1k in https://github.com/daaa1k/ma/pull/36
+
 ## [v0.1.11](https://github.com/daaa1k/ma/compare/v0.1.10...v0.1.11) - 2026-03-20
 - fix: resolve remaining DEPRECATED warnings in goreleaser and Go code by @daaa1k in https://github.com/daaa1k/ma/pull/28
 - Release for v0.1.11 by @github-actions[bot] in https://github.com/daaa1k/ma/pull/29
