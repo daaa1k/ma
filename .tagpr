@@ -1,6 +1,9 @@
 [tagpr]
 vPrefix = true
 releaseBranch = main
+# Create the GitHub Release as draft when tagging so it always exists before the assets job
+# (avoids GET /releases/tags/{tag} 404 if GoReleaser has not registered the release yet).
+# GoReleaser still uses draft: true and uploads into this release; CI then PATCHes draft=false.
 release = draft
 versionFile = VERSION
 command = "mise run prerelease-for-tagpr"
