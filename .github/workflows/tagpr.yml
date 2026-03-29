@@ -143,8 +143,8 @@ jobs:
           # Draft releases are unreliable for gh/curl downloads before publish.
           # Convert hex SHA256 → SRI format (sha256-<base64>) required by Nix fetchurl's `hash` attribute.
           CHECKSUMS=$(cat checksums.txt)
-          LINUX_HASH=$(echo "$CHECKSUMS" | awk '/{{ project_name }}-linux-amd64$/{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
-          MACOS_HASH=$(echo "$CHECKSUMS"  | awk '/{{ project_name }}-darwin-arm64$/{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
+          LINUX_HASH=$(echo "$CHECKSUMS" | awk '/ma-linux-amd64$/{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
+          MACOS_HASH=$(echo "$CHECKSUMS" | awk '/ma-darwin-arm64$/{print $1}' | xxd -r -p | base64 -w0 | sed 's/^/sha256-/')
           echo "linux amd64: $LINUX_HASH"
           echo "darwin arm64: $MACOS_HASH"
           # Update only the binaryHashes block (not binaryArtifacts).
