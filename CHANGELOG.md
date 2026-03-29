@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.2.1](https://github.com/daaa1k/ma/compare/v0.2.0...v0.2.1) - 2026-03-29
+
 ## [v0.2.0](https://github.com/daaa1k/ma/compare/v0.1.12...v0.2.0) - 2026-03-29
 - chore: Update dependency golangci-lint to v2.11.4 by @renovate[bot] in https://github.com/daaa1k/ma/pull/37
 - feat(cursor): add CLI launcher and symlink shared MCP config by @daaa1k in https://github.com/daaa1k/ma/pull/39
