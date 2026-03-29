@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.0](https://github.com/daaa1k/ma/compare/v0.1.12...v0.2.0) - 2026-03-29
+- chore: Update dependency golangci-lint to v2.11.4 by @renovate[bot] in https://github.com/daaa1k/ma/pull/37
+- feat(cursor): add CLI launcher and symlink shared MCP config by @daaa1k in https://github.com/daaa1k/ma/pull/39
+
 ## [v0.1.12](https://github.com/daaa1k/ma/compare/v0.1.11...v0.1.12) - 2026-03-28
 - ci: bump cachix/cachix-action from 16 to 17 by @dependabot[bot] in https://github.com/daaa1k/ma/pull/31
 - chore: apply template by @daaa1k in https://github.com/daaa1k/ma/pull/33
