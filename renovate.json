@@ -1,7 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "ignorePaths": ["**/.copier-answers.yml"],
   "minimumReleaseAge": "5 days",
   "schedule": ["* 10-14 * * 6"],
   "timezone": "Asia/Tokyo",
@@ -46,6 +45,11 @@
       "matchManagers": ["mise"],
       "matchUpdateTypes": ["major", "minor"],
       "commitMessagePrefix": "chore:"
+    },
+    {
+      "description": "Do not apply minimum release age to copier",
+      "matchManagers": ["copier"],
+      "minimumReleaseAge": null
     }
   ]
 }
