@@ -7,12 +7,13 @@ the config automatically adapted to each tool's native format.
 ma copilot
 ma opencode
 ma codex -- --some-flag
+ma cursor
 ma --version
 ```
 
 ## Motivation
 
-Claude Code, GitHub Copilot CLI, OpenCode, and Codex each have their own MCP
+Claude Code, GitHub Copilot CLI, OpenCode, Codex, and Cursor CLI each have their own MCP
 configuration format. With `ma`, you maintain one config file in Claude Code
 JSON format and every tool is launched with the same MCP server setup.
 
@@ -23,14 +24,15 @@ JSON format and every tool is launched with the same MCP server setup.
 | `ma copilot` | GitHub Copilot CLI | Copilot JSON | `--additional-mcp-config <json-content>` |
 | `ma opencode` | OpenCode | OpenCode JSON | `OPENCODE_CONFIG=<tmpfile>` |
 | `ma codex` | Codex CLI | TOML | `-c mcp_servers.NAME={...}` (per server) |
+| `ma cursor` | Cursor CLI (`cursor-agent` / `agent`) | Same as source (Claude JSON) | Symlink to `<workspace>/.cursor/mcp.json` |
 
 ## Transport support
 
-| Transport | copilot | opencode | codex |
-|---|---|---|---|
-| stdio | ✅ | ✅ | ✅ |
-| Streamable HTTP | ✅ | ✅ | ✅ |
-| SSE | ✅ | ✅ (as `remote`) | ⚠️ skipped with warning |
+| Transport | copilot | opencode | codex | cursor |
+|---|---|---|---|---|
+| stdio | ✅ | ✅ | ✅ | ✅ (passthrough) |
+| Streamable HTTP | ✅ | ✅ | ✅ | ✅ (passthrough) |
+| SSE | ✅ | ✅ (as `remote`) | ⚠️ skipped with warning | ✅ (passthrough) |
 
 ## Installation
 
@@ -126,6 +128,9 @@ ma opencode
 # Launch copilot and pass extra flags (everything after -- goes to the tool)
 ma copilot -- --disable-builtin-mcps
 
+# Symlink the resolved .mcp.json to .cursor/mcp.json, then start Cursor CLI
+ma cursor
+
 # Specify a config file explicitly
 ma --config ~/work/mcp.json codex
 ```
@@ -141,6 +146,7 @@ ma --version
 ```sh
 ma --help
 ma copilot --help
+ma cursor --help
 ```
 
 ## Conversion caveats

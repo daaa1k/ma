@@ -29,7 +29,7 @@ Source config (Claude Code JSON format, searched in order):
   2. ./.mcp.json  (current directory)
   3. ~/.mcp.json (home directory)
 
-Supported tools: copilot, opencode, codex`,
+Supported tools: copilot, opencode, codex, cursor`,
 		SilenceUsage: true,
 	}
 
@@ -39,9 +39,32 @@ Supported tools: copilot, opencode, codex`,
 		newToolCmd("copilot", "Launch GitHub Copilot CLI with MCP config injected via --additional-mcp-config", launcher.CopilotLauncher{}, &configFlag),
 		newToolCmd("opencode", "Launch OpenCode with MCP config injected via OPENCODE_CONFIG", launcher.OpenCodeLauncher{}, &configFlag),
 		newToolCmd("codex", "Launch Codex CLI with MCP config injected via --config", launcher.CodexLauncher{}, &configFlag),
+		newCursorCmd(&configFlag),
 	)
 
 	return root
+}
+
+func newCursorCmd(configFlag *string) *cobra.Command {
+	return &cobra.Command{
+		Use:   "cursor",
+		Short: "Symlink shared .mcp.json to .cursor/mcp.json and launch Cursor CLI",
+		Long: `Resolves the same MCP config as other ma commands, symlinks it to
+<workspace>/.cursor/mcp.json (Cursor uses the same JSON schema), then runs
+cursor-agent, or agent if cursor-agent is not in PATH.
+
+Workspace is the current directory, or the path given by --workspace in the
+arguments after -- (forwarded to the Cursor CLI).`,
+		Args: cobra.ArbitraryArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			src, err := resolveConfigPath(*configFlag)
+			if err != nil {
+				return err
+			}
+			return launcher.RunCursor(src, args, cmd.ErrOrStderr())
+		},
+		Example: "  ma cursor\n  ma cursor -- --workspace /path/to/project",
+	}
 }
 
 // newToolCmd builds a subcommand that launches a specific AI tool.
@@ -63,27 +86,37 @@ func newToolCmd(use, short string, l launcher.Launcher, configFlag *string) *cob
 	}
 }
 
-// loadConfig reads and decodes the MCP source config from the first location
-// that exists among: --config flag, ./mcp.json, ~/.mcp.json.
-func loadConfig(flagPath string) (*model.Config, error) {
+// resolveConfigPath returns the path to the first existing MCP config among:
+// --config flag, ./.mcp.json, ~/.mcp.json.
+func resolveConfigPath(flagPath string) (string, error) {
 	candidates := resolveCandidates(flagPath)
 
 	for _, path := range candidates {
-		data, err := os.ReadFile(path)
-		if errors.Is(err, fs.ErrNotExist) {
-			continue
+		if _, err := os.Stat(path); err == nil {
+			return path, nil
+		} else if !errors.Is(err, fs.ErrNotExist) {
+			return "", fmt.Errorf("stat config %s: %w", path, err)
 		}
-		if err != nil {
-			return nil, fmt.Errorf("read config %s: %w", path, err)
-		}
-		cfg, _, err := convert.Decode(convert.FormatClaude, data)
-		if err != nil {
-			return nil, fmt.Errorf("parse config %s: %w", path, err)
-		}
-		return cfg, nil
 	}
 
-	return nil, fmt.Errorf("no MCP config found; tried: %v\nCreate .mcp.json or use --config", candidates)
+	return "", fmt.Errorf("no MCP config found; tried: %v\nCreate .mcp.json or use --config", candidates)
+}
+
+// loadConfig reads and decodes the MCP source config from resolveConfigPath.
+func loadConfig(flagPath string) (*model.Config, error) {
+	path, err := resolveConfigPath(flagPath)
+	if err != nil {
+		return nil, err
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("read config %s: %w", path, err)
+	}
+	cfg, _, err := convert.Decode(convert.FormatClaude, data)
+	if err != nil {
+		return nil, fmt.Errorf("parse config %s: %w", path, err)
+	}
+	return cfg, nil
 }
 
 func resolveCandidates(flagPath string) []string {
