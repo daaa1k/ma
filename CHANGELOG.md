@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.2.2](https://github.com/daaa1k/ma/compare/v0.2.1...v0.2.2) - 2026-04-25
+- chore: Update dependency https://github.com/daaa1k/template-go to v0.1.12 by @renovate[bot] in https://github.com/daaa1k/ma/pull/43
+- ci: Update daaa1k/github-actions-lint action to v1.0.4 by @renovate[bot] in https://github.com/daaa1k/ma/pull/44
+- ci: Update Songmu/tagpr action to v1.18.1 by @renovate[bot] in https://github.com/daaa1k/ma/pull/47
+- chore: update dependency https://github.com/daaa1k/common-config to v1.3.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/48
+- chore: update dependency https://github.com/daaa1k/common-config to v1.5.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/52
+- ci: update goreleaser/goreleaser-action action to v7.1.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/53
+- ci: update github-actions patch by @renovate[bot] in https://github.com/daaa1k/ma/pull/50
+- chore: update dependency go to v1.26.2 by @renovate[bot] in https://github.com/daaa1k/ma/pull/49
+- chore: update dependency https://github.com/daaa1k/template-go to v0.1.17 by @renovate[bot] in https://github.com/daaa1k/ma/pull/51
+
 ## [v0.2.1](https://github.com/daaa1k/ma/compare/v0.2.0...v0.2.1) - 2026-03-29
 
 ## [v0.2.0](https://github.com/daaa1k/ma/compare/v0.1.12...v0.2.0) - 2026-03-29
