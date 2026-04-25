@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.2.3](https://github.com/daaa1k/ma/compare/v0.2.2...v0.2.3) - 2026-04-25
+
 ## [v0.2.2](https://github.com/daaa1k/ma/compare/v0.2.1...v0.2.2) - 2026-04-25
 - chore: Update dependency https://github.com/daaa1k/template-go to v0.1.12 by @renovate[bot] in https://github.com/daaa1k/ma/pull/43
 - ci: Update daaa1k/github-actions-lint action to v1.0.4 by @renovate[bot] in https://github.com/daaa1k/ma/pull/44
