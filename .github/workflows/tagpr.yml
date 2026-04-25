@@ -71,17 +71,6 @@ jobs:
           # Avoid actions/cache before release builds (zizmor cache-poisoning).
           cache: false
 
-      # mise may rewrite lock files; GoReleaser requires a clean working tree
-      # (https://goreleaser.com/errors/dirty).
-      - name: Restore committed mise lock files
-        run: |
-          set -euo pipefail
-          for f in mise.lock .config/mise/mise.lock; do
-            if git rev-parse -q --verify "HEAD:$f" >/dev/null 2>&1; then
-              git restore -- "$f"
-            fi
-          done
-
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@e24998b8b67b290c2fa8b7c14fcfa7de2c5c9b8c # v7.1.0
         with:
