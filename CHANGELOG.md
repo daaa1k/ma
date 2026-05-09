@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.4](https://github.com/daaa1k/ma/compare/v0.2.3...v0.2.4) - 2026-05-09
+- ci: update aquasecurity/trivy-action action to v0.36.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/56
+- ci: update goreleaser/goreleaser-action action to v7.2.1 by @renovate[bot] in https://github.com/daaa1k/ma/pull/57
+
 ## [v0.2.3](https://github.com/daaa1k/ma/compare/v0.2.2...v0.2.3) - 2026-04-25
 
 ## [v0.2.2](https://github.com/daaa1k/ma/compare/v0.2.1...v0.2.2) - 2026-04-25
