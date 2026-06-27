@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.2.5](https://github.com/daaa1k/ma/compare/v0.2.4...v0.2.5) - 2026-06-27
+
+- ci: update Songmu/tagpr action to v1.19.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/62
+- chore: update mise patch dependencies by @renovate[bot] in https://github.com/daaa1k/ma/pull/61
+- ci: update goreleaser/goreleaser-action action to v7.2.2 by @renovate[bot] in https://github.com/daaa1k/ma/pull/64
+- chore: update dependency prek to v0.4.2 by @renovate[bot] in https://github.com/daaa1k/ma/pull/63
+- chore: update dependency https://github.com/daaa1k/common-config to v1.5.3 by @renovate[bot] in https://github.com/daaa1k/ma/pull/66
+- chore: update dependency prek to v0.4.3 by @renovate[bot] in https://github.com/daaa1k/ma/pull/68
+- chore: update dependency https://github.com/daaa1k/template-go to v0.1.19 by @renovate[bot] in https://github.com/daaa1k/ma/pull/67
+- chore: update mise patch dependencies by @renovate[bot] in https://github.com/daaa1k/ma/pull/70
+- chore: update mise patch dependencies by @renovate[bot] in https://github.com/daaa1k/ma/pull/71
+- ci: update github-actions patch to v6.0.3 by @renovate[bot] in https://github.com/daaa1k/ma/pull/72
+- ci: update jdx/mise-action action to v4.1.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/73
+- ci: update Songmu/tagpr action to v1.20.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/74
+- chore: update dependency https://github.com/daaa1k/common-config to v1.5.5 by @renovate[bot] in https://github.com/daaa1k/ma/pull/75
+- chore: update dependency prek to v0.4.5 by @renovate[bot] in https://github.com/daaa1k/ma/pull/76
+- ci: update jdx/mise-action action to v4.2.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/77
+
 ## [v0.2.4](https://github.com/daaa1k/ma/compare/v0.2.3...v0.2.4) - 2026-05-09
 - ci: update aquasecurity/trivy-action action to v0.36.0 by @renovate[bot] in https://github.com/daaa1k/ma/pull/56
 - ci: update goreleaser/goreleaser-action action to v7.2.1 by @renovate[bot] in https://github.com/daaa1k/ma/pull/57
